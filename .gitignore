@@ -7,3 +7,6 @@ desktop.ini
 .vscode/
 *.swp
 *.swo
+
+# Cloudflare Workers
+.wrangler/
