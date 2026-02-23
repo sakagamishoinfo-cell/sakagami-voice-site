@@ -18,7 +18,15 @@
 ├── apple-touch-icon.png # Apple用アイコン ※未作成
 ├── images/
 │   └── profile.jpg     # プロフィール写真
-└── CLAUDE.md           # このファイル
+├── CLAUDE.md           # このファイル
+├── tools/
+│   └── serifu-counter/
+│       └── index.html  # セリフカウンター（AI解析版）
+└── workers/
+    └── serifu-counter-api/
+        ├── wrangler.toml   # Cloudflare Worker設定
+        └── src/
+            └── index.js    # Gemini APIプロキシ
 ```
 
 ## 技術構成
@@ -67,6 +75,36 @@
 - Twitter Card: `summary_large_image`
 - Twitter アカウント: `@sakagamisho`
 - canonical URL: `https://sakagami-voice.com/`
+
+## Git / バージョン管理
+- **リポジトリ**: https://github.com/ssakagami-commits/sakagami-voice-site (Private)
+- **ブランチ**: main
+- **ローカルパス**: `C:\Users\s_sakagami\Desktop\声優・ポートフォリオ関連\ホームページ`
+- **Git ユーザー名**: ssakagami-commits
+- **Git メール**: sakagamisho.info@gmail.com
+- コミットメッセージは日本語で記載
+- 変更後は `git add` → `git commit` → `git push origin main` で反映
+
+## セリフカウンター（/tools/serifu-counter/）
+声優・ナレーター向けの台本文字数カウントツール。
+- **URL**: https://sakagami-voice.com/tools/serifu-counter/
+- **解析方式**: AI解析のみ（Gemini 2.5 Flash）— 正規表現は使わない
+- **アーキテクチャ**: ブラウザ → Cloudflare Worker（プロキシ） → Gemini API
+- **対応入力**: テキスト貼り付け、Excel(.xlsx)、Word(.docx)、テキストファイル
+- **外部ライブラリ**: SheetJS (xlsx.js)、mammoth.js
+- **機能**: セリフ/ト書き分類、役名別内訳、推定読み上げ時間（3段階速度）
+- **読み上げ速度**: ゆったり280字/分、普通380字/分、スピーディー480字/分
+
+## Cloudflare Worker（serifu-counter-api）
+Gemini APIキーを隠すためのサーバーレスプロキシ。
+- **Worker URL**: https://serifu-counter-api.hataraba-xai.workers.dev
+- **Cloudflareアカウント**: Hataraba_xai@office-b.com
+- **Account ID**: ec6340aad9db27a431496f9464de251a
+- **モデル**: gemini-2.5-flash（responseMimeType: application/json）
+- **Secret**: `GEMINI_API_KEY`（wrangler secret putで設定済み）
+- **CORS許可オリジン**: sakagami-voice.com, localhost:8080, 127.0.0.1:8080
+- **デプロイ**: `CLOUDFLARE_API_TOKEN=<token> npx wrangler deploy`（workers/serifu-counter-api/ディレクトリから）
+- **テキスト上限**: 10万文字
 
 ## 開発メモ
 - ローカル（`file://`プロトコル）ではYouTube埋め込みが表示されない。テスト時はHTTPサーバーを使う

@@ -1,0 +1,1189 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>セリフカウンター | 台本の文字数を簡単カウント</title>
+    <meta name="description" content="声優・ナレーター・VTuber向け。台本を貼り付けるだけでセリフ文字数・ト書き文字数・役名別内訳・推定読み上げ時間を自動カウント。Excel・Word・テキストファイル対応。">
+    <meta name="keywords" content="セリフカウンター,台本,文字数,声優,ナレーター,VTuber,ト書き,カウント">
+
+    <!-- OGP -->
+    <meta property="og:type" content="website">
+    <meta property="og:title" content="セリフカウンター | 台本の文字数を簡単カウント">
+    <meta property="og:description" content="台本を貼り付けるだけでセリフ文字数・役名別内訳・推定読み上げ時間を自動カウント。">
+    <meta property="og:url" content="https://sakagami-voice.com/tools/serifu-counter/">
+    <meta property="og:site_name" content="坂上晶 - Voice Actor">
+    <meta name="twitter:card" content="summary">
+    <meta name="twitter:site" content="@sakagamisho">
+
+    <!-- Favicon -->
+    <link rel="icon" type="image/svg+xml" href="../../favicon.svg">
+
+    <!-- Google AdSense（承認後にパブリッシャーIDを設定してください）-->
+    <!-- <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-YOUR_PUBLISHER_ID" crossorigin="anonymous"></script> -->
+
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@300;400;500&family=Noto+Sans+JP:wght@300;400;500;700&display=swap" rel="stylesheet">
+
+    <!-- External Libraries -->
+    <script src="https://cdn.sheetjs.com/xlsx-0.20.1/package/dist/xlsx.full.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/mammoth/1.8.0/mammoth.browser.min.js"></script>
+
+    <style>
+        :root {
+            --accent: #6b9e7a;
+            --accent-light: #4e8a60;
+            --accent-hover: #5a8e69;
+            --bg-primary: #f9f8f5;
+            --bg-secondary: #f1efe9;
+            --bg-card: #fdfcfa;
+            --text-primary: #1a1a1a;
+            --text-secondary: #3a3a3a;
+            --text-dim: #5a5a5a;
+            --gold: #b89856;
+            --border: rgba(0,0,0,0.08);
+            --shadow: 0 2px 12px rgba(0,0,0,0.06);
+            --radius: 12px;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: 'Noto Sans JP', sans-serif;
+            background: var(--bg-primary);
+            color: var(--text-primary);
+            line-height: 1.8;
+            min-height: 100vh;
+        }
+
+        /* ===== Header ===== */
+        .header {
+            background: var(--bg-card);
+            border-bottom: 1px solid var(--border);
+            padding: 16px 0;
+        }
+        .header-inner {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 0 20px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+        .header-logo {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 1.1rem;
+            color: var(--text-dim);
+            text-decoration: none;
+            letter-spacing: 0.05em;
+        }
+        .header-logo:hover { color: var(--accent); }
+        .header-badge {
+            font-size: 0.75rem;
+            color: var(--accent);
+            background: rgba(107, 158, 122, 0.1);
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-weight: 500;
+        }
+
+        /* ===== Main ===== */
+        .main {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 40px 20px 60px;
+        }
+
+        /* ===== Title Section ===== */
+        .title-section {
+            text-align: center;
+            margin-bottom: 36px;
+        }
+        .title-section h1 {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 2rem;
+            font-weight: 400;
+            margin-bottom: 12px;
+            color: var(--text-primary);
+        }
+        .title-section .subtitle {
+            font-size: 0.95rem;
+            color: var(--text-dim);
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        /* ===== Rule Box ===== */
+        .rule-box {
+            background: rgba(107, 158, 122, 0.06);
+            border: 1px solid rgba(107, 158, 122, 0.2);
+            border-radius: var(--radius);
+            padding: 20px 24px;
+            margin-bottom: 32px;
+            font-size: 0.9rem;
+        }
+        .rule-box-title {
+            font-weight: 700;
+            color: var(--accent);
+            margin-bottom: 8px;
+            font-size: 0.95rem;
+        }
+        .rule-box ul {
+            padding-left: 1.2em;
+            color: var(--text-secondary);
+        }
+        .rule-box li { margin-bottom: 4px; }
+
+        /* ===== Card ===== */
+        .card {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            padding: 28px;
+            margin-bottom: 24px;
+            box-shadow: var(--shadow);
+        }
+        .card-title {
+            font-size: 1.05rem;
+            font-weight: 700;
+            margin-bottom: 16px;
+            color: var(--text-primary);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .card-title-icon {
+            width: 24px;
+            height: 24px;
+            background: var(--accent);
+            color: white;
+            border-radius: 6px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.8rem;
+            font-weight: 700;
+        }
+
+        /* ===== Input Tabs ===== */
+        .input-tabs {
+            display: flex;
+            gap: 0;
+            margin-bottom: 16px;
+            border-bottom: 2px solid var(--border);
+        }
+        .input-tab {
+            padding: 10px 20px;
+            cursor: pointer;
+            font-size: 0.9rem;
+            color: var(--text-dim);
+            border: none;
+            background: none;
+            font-family: inherit;
+            position: relative;
+            transition: color 0.2s;
+        }
+        .input-tab:hover { color: var(--text-primary); }
+        .input-tab.active {
+            color: var(--accent);
+            font-weight: 500;
+        }
+        .input-tab.active::after {
+            content: '';
+            position: absolute;
+            bottom: -2px;
+            left: 0;
+            right: 0;
+            height: 2px;
+            background: var(--accent);
+        }
+
+        .tab-content { display: none; }
+        .tab-content.active { display: block; }
+
+        /* Textarea */
+        .script-textarea {
+            width: 100%;
+            min-height: 240px;
+            padding: 16px;
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            font-family: 'Noto Sans JP', monospace;
+            font-size: 0.9rem;
+            line-height: 1.8;
+            resize: vertical;
+            background: var(--bg-primary);
+            color: var(--text-primary);
+            transition: border-color 0.2s;
+        }
+        .script-textarea:focus {
+            outline: none;
+            border-color: var(--accent);
+        }
+        .script-textarea::placeholder { color: #aaa; }
+        .script-textarea.vertical {
+            writing-mode: vertical-rl;
+            min-height: 400px;
+            resize: horizontal;
+            overflow-x: auto;
+        }
+
+        /* Writing mode toggle */
+        .writing-mode-toggle {
+            display: flex;
+            gap: 0;
+            margin-bottom: 10px;
+            background: var(--bg-primary);
+            border-radius: 8px;
+            padding: 3px;
+            width: fit-content;
+        }
+        .writing-mode-btn {
+            padding: 6px 16px;
+            border: none;
+            background: none;
+            font-family: inherit;
+            font-size: 0.8rem;
+            color: var(--text-dim);
+            cursor: pointer;
+            border-radius: 6px;
+            transition: all 0.2s;
+        }
+        .writing-mode-btn.active {
+            background: var(--accent);
+            color: white;
+        }
+        .writing-mode-btn:hover:not(.active) {
+            color: var(--text-primary);
+        }
+
+        /* File Upload */
+        .file-upload-area {
+            border: 2px dashed rgba(107, 158, 122, 0.3);
+            border-radius: 8px;
+            padding: 40px 20px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.2s;
+            background: var(--bg-primary);
+        }
+        .file-upload-area:hover,
+        .file-upload-area.dragover {
+            border-color: var(--accent);
+            background: rgba(107, 158, 122, 0.04);
+        }
+        .file-upload-icon { font-size: 2rem; margin-bottom: 8px; }
+        .file-upload-text { color: var(--text-dim); font-size: 0.9rem; }
+        .file-upload-formats {
+            color: #aaa;
+            font-size: 0.8rem;
+            margin-top: 6px;
+        }
+        .file-upload-input { display: none; }
+        .file-name {
+            margin-top: 12px;
+            padding: 8px 16px;
+            background: rgba(107, 158, 122, 0.08);
+            border-radius: 6px;
+            font-size: 0.85rem;
+            color: var(--accent);
+            display: none;
+        }
+        .file-name.show { display: inline-block; }
+
+        /* ===== Options ===== */
+        .options-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+        }
+        .option-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 10px 14px;
+            background: var(--bg-primary);
+            border-radius: 8px;
+            cursor: pointer;
+            transition: background 0.2s;
+            font-size: 0.9rem;
+        }
+        .option-item:hover { background: var(--bg-secondary); }
+        .option-item input[type="checkbox"] {
+            width: 18px;
+            height: 18px;
+            accent-color: var(--accent);
+            cursor: pointer;
+        }
+        .option-item label {
+            cursor: pointer;
+            color: var(--text-secondary);
+            user-select: none;
+        }
+
+        /* ===== Count Button ===== */
+        .count-btn {
+            display: block;
+            width: 100%;
+            padding: 16px;
+            background: var(--accent);
+            color: white;
+            border: none;
+            border-radius: var(--radius);
+            font-size: 1.1rem;
+            font-weight: 700;
+            font-family: inherit;
+            cursor: pointer;
+            transition: background 0.2s;
+            margin-bottom: 24px;
+        }
+        .count-btn:hover { background: var(--accent-hover); }
+        .count-btn:active { transform: scale(0.99); }
+        .count-btn:disabled {
+            background: #aaa;
+            cursor: not-allowed;
+        }
+
+        /* ===== Loading ===== */
+        .loading-overlay {
+            display: none;
+            position: fixed;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: rgba(0,0,0,0.3);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+        }
+        .loading-overlay.show {
+            display: flex;
+        }
+        .loading-box {
+            background: white;
+            border-radius: var(--radius);
+            padding: 40px 50px;
+            text-align: center;
+            box-shadow: 0 8px 32px rgba(0,0,0,0.15);
+        }
+        .loading-spinner {
+            width: 40px;
+            height: 40px;
+            border: 3px solid var(--border);
+            border-top-color: var(--accent);
+            border-radius: 50%;
+            animation: spin 0.8s linear infinite;
+            margin: 0 auto 16px;
+        }
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+        .loading-text {
+            color: var(--text-secondary);
+            font-size: 0.95rem;
+        }
+        .loading-sub {
+            color: var(--text-dim);
+            font-size: 0.8rem;
+            margin-top: 6px;
+        }
+
+        /* ===== Error ===== */
+        .error-message {
+            display: none;
+            background: #fef2f2;
+            border: 1px solid #fecaca;
+            border-radius: var(--radius);
+            padding: 16px 20px;
+            margin-bottom: 24px;
+            color: #b91c1c;
+            font-size: 0.9rem;
+        }
+        .error-message.show { display: block; }
+
+        /* ===== Results ===== */
+        .results { display: none; }
+        .results.show { display: block; }
+
+        .result-summary {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 16px;
+            margin-bottom: 24px;
+        }
+        .result-card {
+            text-align: center;
+            padding: 20px 12px;
+            background: var(--bg-primary);
+            border-radius: var(--radius);
+            border: 1px solid var(--border);
+        }
+        .result-card-label {
+            font-size: 0.8rem;
+            color: var(--text-dim);
+            margin-bottom: 4px;
+        }
+        .result-card-value {
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: var(--accent);
+            line-height: 1.2;
+        }
+        .result-card-unit {
+            font-size: 0.8rem;
+            color: var(--text-dim);
+            font-weight: 400;
+        }
+
+        /* Time estimate */
+        .time-estimate {
+            margin-bottom: 24px;
+        }
+        .time-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 12px;
+        }
+        .time-card {
+            text-align: center;
+            padding: 16px 12px;
+            background: var(--bg-primary);
+            border-radius: 8px;
+            border: 1px solid var(--border);
+        }
+        .time-card-label {
+            font-size: 0.8rem;
+            color: var(--text-dim);
+            margin-bottom: 4px;
+        }
+        .time-card-value {
+            font-size: 1.3rem;
+            font-weight: 700;
+            color: var(--text-primary);
+        }
+
+        /* Role table */
+        .role-table-wrapper {
+            overflow-x: auto;
+        }
+        .role-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 0.9rem;
+        }
+        .role-table th {
+            text-align: left;
+            padding: 12px 16px;
+            background: var(--bg-secondary);
+            color: var(--text-secondary);
+            font-weight: 500;
+            font-size: 0.85rem;
+            border-bottom: 1px solid var(--border);
+        }
+        .role-table td {
+            padding: 12px 16px;
+            border-bottom: 1px solid var(--border);
+            color: var(--text-primary);
+        }
+        .role-table tr:last-child td { border-bottom: none; }
+        .role-table tr:hover td { background: rgba(107, 158, 122, 0.03); }
+        .role-name-cell { font-weight: 500; }
+        .role-count-cell { text-align: right; font-variant-numeric: tabular-nums; }
+
+        .no-roles {
+            text-align: center;
+            padding: 20px;
+            color: var(--text-dim);
+            font-size: 0.9rem;
+        }
+
+        /* ===== Ad Space ===== */
+        .ad-space {
+            background: var(--bg-secondary);
+            border-radius: var(--radius);
+            padding: 20px;
+            text-align: center;
+            margin: 32px 0;
+            min-height: 100px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .ad-space .ad-placeholder {
+            color: #ccc;
+            font-size: 0.8rem;
+            border: 1px dashed var(--border);
+            border-radius: 8px;
+            padding: 30px 20px;
+            width: 100%;
+        }
+
+        /* ===== Interstitial Ad ===== */
+        .interstitial-overlay {
+            display: none;
+            position: fixed;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: rgba(0,0,0,0.7);
+            z-index: 2000;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+        .interstitial-overlay.show {
+            display: flex;
+        }
+        .interstitial-box {
+            background: white;
+            border-radius: 16px;
+            max-width: 500px;
+            width: 100%;
+            overflow: hidden;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            animation: interstitialIn 0.3s ease;
+        }
+        @keyframes interstitialIn {
+            from { opacity: 0; transform: scale(0.9); }
+            to { opacity: 1; transform: scale(1); }
+        }
+        .interstitial-header {
+            padding: 16px 20px;
+            text-align: center;
+            border-bottom: 1px solid var(--border);
+        }
+        .interstitial-header-text {
+            font-size: 0.85rem;
+            color: var(--text-dim);
+        }
+        .interstitial-ad-area {
+            padding: 20px;
+            min-height: 250px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: var(--bg-primary);
+        }
+        .interstitial-ad-area .ad-placeholder {
+            color: #bbb;
+            font-size: 0.8rem;
+            border: 1px dashed var(--border);
+            border-radius: 8px;
+            padding: 40px 20px;
+            width: 100%;
+            text-align: center;
+        }
+        .interstitial-footer {
+            padding: 16px 20px;
+            text-align: center;
+            border-top: 1px solid var(--border);
+        }
+        .interstitial-close-btn {
+            padding: 12px 40px;
+            background: var(--accent);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 0.95rem;
+            font-weight: 700;
+            font-family: inherit;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+        .interstitial-close-btn:hover { background: var(--accent-hover); }
+        .interstitial-close-btn:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+        }
+        .interstitial-countdown {
+            font-size: 0.8rem;
+            color: var(--text-dim);
+            margin-top: 8px;
+        }
+
+        /* ===== Beta Badge ===== */
+        .beta-badge {
+            font-size: 0.6rem;
+            color: #e67e22;
+            background: rgba(230, 126, 34, 0.1);
+            padding: 2px 8px;
+            border-radius: 10px;
+            font-weight: 700;
+            letter-spacing: 0.05em;
+            vertical-align: super;
+            margin-left: 4px;
+        }
+
+        /* ===== Footer ===== */
+        .footer {
+            border-top: 1px solid var(--border);
+            padding: 32px 20px;
+            text-align: center;
+            background: var(--bg-card);
+        }
+        .footer-credit {
+            font-size: 0.85rem;
+            color: var(--text-dim);
+            margin-bottom: 8px;
+        }
+        .footer-credit a {
+            color: var(--accent);
+            text-decoration: none;
+        }
+        .footer-credit a:hover { text-decoration: underline; }
+        .footer-copy {
+            font-size: 0.75rem;
+            color: #aaa;
+        }
+
+        /* ===== Responsive ===== */
+        @media (max-width: 600px) {
+            .title-section h1 { font-size: 1.5rem; }
+            .card { padding: 20px 16px; }
+            .options-grid { grid-template-columns: 1fr; }
+            .result-summary { grid-template-columns: 1fr; }
+            .time-grid { grid-template-columns: 1fr; }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Loading Overlay -->
+    <div class="loading-overlay" id="loadingOverlay">
+        <div class="loading-box">
+            <div class="loading-spinner"></div>
+            <div class="loading-text">AIが台本を解析中...</div>
+            <div class="loading-sub">台本の長さによって数秒〜十数秒かかります</div>
+        </div>
+    </div>
+
+    <!-- Interstitial Ad Overlay -->
+    <div class="interstitial-overlay" id="interstitialOverlay">
+        <div class="interstitial-box">
+            <div class="interstitial-header">
+                <div class="interstitial-header-text">解析が完了しました ─ スポンサー広告</div>
+            </div>
+            <div class="interstitial-ad-area" id="interstitialAdArea">
+                <!-- AdSense承認後: ここに広告ユニットを挿入 -->
+                <!-- <ins class="adsbygoogle" style="display:block" data-ad-client="ca-pub-YOUR_PUBLISHER_ID" data-ad-slot="INTERSTITIAL_SLOT_ID" data-ad-format="rectangle"></ins> -->
+                <div class="ad-placeholder">広告（AdSense承認後に表示されます）</div>
+            </div>
+            <div class="interstitial-footer">
+                <button class="interstitial-close-btn" id="interstitialCloseBtn" disabled>結果を見る</button>
+                <div class="interstitial-countdown" id="interstitialCountdown"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Header -->
+    <header class="header">
+        <div class="header-inner">
+            <a href="../../" class="header-logo">Sho Sakagami</a>
+            <span class="header-badge">Tools</span>
+        </div>
+    </header>
+
+    <!-- Main -->
+    <main class="main">
+
+        <!-- Title -->
+        <div class="title-section">
+            <h1>セリフカウンター<span class="beta-badge">β</span></h1>
+            <p class="subtitle">台本を貼り付けるだけで、AIがセリフとト書きを自動判別。文字数・役名別内訳・推定読み上げ時間をカウントします。</p>
+        </div>
+
+        <!-- Rule Box -->
+        <div class="rule-box">
+            <div class="rule-box-title">このツールの特徴</div>
+            <ul>
+                <li>AIが台本の形式を自動判別し、<strong>セリフ</strong>と<strong>ト書き</strong>を正確に分類します</li>
+                <li>さまざまな台本形式に対応（区切り文字型、カッコ型、インデント型など）</li>
+                <li>役名も自動抽出し、役名別の文字数内訳を表示します</li>
+            </ul>
+        </div>
+
+        <!-- Input Section -->
+        <div class="card">
+            <div class="card-title">
+                <div class="card-title-icon">1</div>
+                台本を入力
+            </div>
+
+            <div class="input-tabs">
+                <button class="input-tab active" data-tab="text">テキスト貼り付け</button>
+                <button class="input-tab" data-tab="file">ファイルアップロード</button>
+            </div>
+
+            <div class="tab-content active" id="tab-text">
+                <div class="writing-mode-toggle">
+                    <button class="writing-mode-btn active" data-mode="horizontal">横書き</button>
+                    <button class="writing-mode-btn" data-mode="vertical">縦書き</button>
+                </div>
+                <textarea class="script-textarea" id="scriptInput" placeholder="ここに台本を貼り付けてください...
+
+例）
+太郎：おはよう、花子。今日はいい天気だね
+（花子が振り返る）
+花子：おはよう！本当にいい天気ね"></textarea>
+            </div>
+
+            <div class="tab-content" id="tab-file">
+                <div class="file-upload-area" id="fileUploadArea">
+                    <div class="file-upload-icon">📄</div>
+                    <div class="file-upload-text">ファイルをドラッグ＆ドロップ、またはクリックして選択</div>
+                    <div class="file-upload-formats">.txt / .xlsx / .xls / .docx 対応</div>
+                    <input type="file" class="file-upload-input" id="fileInput" accept=".txt,.xlsx,.xls,.docx">
+                </div>
+                <div class="file-name" id="fileName"></div>
+            </div>
+        </div>
+
+        <!-- Options Section -->
+        <div class="card">
+            <div class="card-title">
+                <div class="card-title-icon">2</div>
+                カウントオプション
+            </div>
+
+            <div class="options-grid">
+                <div class="option-item">
+                    <input type="checkbox" id="optTogaki" checked>
+                    <label for="optTogaki">ト書きも文字数に含める</label>
+                </div>
+                <div class="option-item">
+                    <input type="checkbox" id="optRoleName">
+                    <label for="optRoleName">役名を文字数に含める</label>
+                </div>
+                <div class="option-item">
+                    <input type="checkbox" id="optPunctuation" checked>
+                    <label for="optPunctuation">句読点を文字数に含める</label>
+                </div>
+            </div>
+        </div>
+
+        <!-- Count Button -->
+        <button class="count-btn" id="countBtn">AIでカウントする</button>
+
+        <!-- Error Message -->
+        <div class="error-message" id="errorMessage"></div>
+
+        <!-- Ad Space (top) - 結果の上 -->
+        <div class="ad-space" id="adTop">
+            <!-- AdSense承認後: 以下のコメントを解除してスロットIDを設定 -->
+            <!-- <ins class="adsbygoogle" style="display:block" data-ad-client="ca-pub-YOUR_PUBLISHER_ID" data-ad-slot="TOP_SLOT_ID" data-ad-format="auto" data-full-width-responsive="true"></ins>
+            <script>(adsbygoogle = window.adsbygoogle || []).push({});</script> -->
+            <div class="ad-placeholder">広告（AdSense承認後に表示されます）</div>
+        </div>
+
+        <!-- Results -->
+        <div class="results" id="results">
+
+            <!-- Summary Cards -->
+            <div class="card">
+                <div class="card-title">
+                    <div class="card-title-icon">★</div>
+                    カウント結果
+                </div>
+
+                <div class="result-summary">
+                    <div class="result-card">
+                        <div class="result-card-label">セリフ文字数</div>
+                        <div class="result-card-value"><span id="serifuCount">0</span><span class="result-card-unit"> 文字</span></div>
+                    </div>
+                    <div class="result-card">
+                        <div class="result-card-label">ト書き文字数</div>
+                        <div class="result-card-value"><span id="togakiCount">0</span><span class="result-card-unit"> 文字</span></div>
+                    </div>
+                    <div class="result-card">
+                        <div class="result-card-label">総文字数</div>
+                        <div class="result-card-value"><span id="totalCount">0</span><span class="result-card-unit"> 文字</span></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Time Estimate -->
+            <div class="card time-estimate">
+                <div class="card-title">
+                    <div class="card-title-icon">⏱</div>
+                    推定読み上げ時間（セリフのみ）
+                </div>
+                <div class="time-grid">
+                    <div class="time-card">
+                        <div class="time-card-label">ゆったり</div>
+                        <div class="time-card-value" id="timeSlow">-</div>
+                    </div>
+                    <div class="time-card">
+                        <div class="time-card-label">普通</div>
+                        <div class="time-card-value" id="timeNormal">-</div>
+                    </div>
+                    <div class="time-card">
+                        <div class="time-card-label">スピーディー</div>
+                        <div class="time-card-value" id="timeFast">-</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Role Breakdown -->
+            <div class="card">
+                <div class="card-title">
+                    <div class="card-title-icon">👤</div>
+                    役名別内訳
+                </div>
+                <div class="role-table-wrapper" id="roleTableWrapper">
+                </div>
+            </div>
+        </div>
+
+        <!-- Ad Space (bottom) - 結果の下 -->
+        <div class="ad-space" id="adBottom">
+            <!-- AdSense承認後: 以下のコメントを解除してスロットIDを設定 -->
+            <!-- <ins class="adsbygoogle" style="display:block" data-ad-client="ca-pub-YOUR_PUBLISHER_ID" data-ad-slot="BOTTOM_SLOT_ID" data-ad-format="auto" data-full-width-responsive="true"></ins>
+            <script>(adsbygoogle = window.adsbygoogle || []).push({});</script> -->
+            <div class="ad-placeholder">広告（AdSense承認後に表示されます）</div>
+        </div>
+
+    </main>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="footer-credit">
+            制作: <a href="../../">声優・坂上晶</a> ／ <a href="https://x.com/sakagamisho" target="_blank" rel="noopener">X (@sakagamisho)</a>
+        </div>
+        <div class="footer-copy">&copy; 2026 Sho Sakagami. All rights reserved.</div>
+    </footer>
+
+    <script>
+    // ===== 設定 =====
+    // Cloudflare Worker のエンドポイント（デプロイ後に設定する）
+    const API_ENDPOINT = 'https://serifu-counter-api.hataraba-xai.workers.dev';
+
+    // 読み上げ速度の定数（文字/分）
+    const SPEED_SLOW = 280;
+    const SPEED_NORMAL = 380;
+    const SPEED_FAST = 480;
+
+    // ===== タブ切り替え =====
+    document.querySelectorAll('.input-tab').forEach(tab => {
+        tab.addEventListener('click', () => {
+            document.querySelectorAll('.input-tab').forEach(t => t.classList.remove('active'));
+            document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+            tab.classList.add('active');
+            document.getElementById('tab-' + tab.dataset.tab).classList.add('active');
+        });
+    });
+
+    // ===== 縦書き・横書き切り替え =====
+    document.querySelectorAll('.writing-mode-btn').forEach(btn => {
+        btn.addEventListener('click', () => {
+            document.querySelectorAll('.writing-mode-btn').forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+            const textarea = document.getElementById('scriptInput');
+            if (btn.dataset.mode === 'vertical') {
+                textarea.classList.add('vertical');
+            } else {
+                textarea.classList.remove('vertical');
+            }
+        });
+    });
+
+    // ===== ファイルアップロード =====
+    const fileUploadArea = document.getElementById('fileUploadArea');
+    const fileInput = document.getElementById('fileInput');
+    const fileNameDisplay = document.getElementById('fileName');
+    const scriptInput = document.getElementById('scriptInput');
+
+    fileUploadArea.addEventListener('click', () => fileInput.click());
+
+    fileUploadArea.addEventListener('dragover', (e) => {
+        e.preventDefault();
+        fileUploadArea.classList.add('dragover');
+    });
+    fileUploadArea.addEventListener('dragleave', () => {
+        fileUploadArea.classList.remove('dragover');
+    });
+    fileUploadArea.addEventListener('drop', (e) => {
+        e.preventDefault();
+        fileUploadArea.classList.remove('dragover');
+        if (e.dataTransfer.files.length > 0) {
+            handleFile(e.dataTransfer.files[0]);
+        }
+    });
+
+    fileInput.addEventListener('change', () => {
+        if (fileInput.files.length > 0) {
+            handleFile(fileInput.files[0]);
+        }
+    });
+
+    async function handleFile(file) {
+        const name = file.name;
+        const ext = name.split('.').pop().toLowerCase();
+
+        fileNameDisplay.textContent = '📎 ' + name;
+        fileNameDisplay.classList.add('show');
+
+        try {
+            let text = '';
+            if (ext === 'txt') {
+                text = await readTextFile(file);
+            } else if (ext === 'xlsx' || ext === 'xls') {
+                text = await readExcelFile(file);
+            } else if (ext === 'docx') {
+                text = await readWordFile(file);
+            } else {
+                alert('対応していないファイル形式です。\n.txt / .xlsx / .xls / .docx に対応しています。');
+                return;
+            }
+
+            // テキストタブに内容を反映して切り替え
+            scriptInput.value = text;
+            document.querySelectorAll('.input-tab').forEach(t => t.classList.remove('active'));
+            document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+            document.querySelector('[data-tab="text"]').classList.add('active');
+            document.getElementById('tab-text').classList.add('active');
+
+        } catch (err) {
+            alert('ファイルの読み込みに失敗しました。\n' + err.message);
+        }
+    }
+
+    function readTextFile(file) {
+        return new Promise((resolve, reject) => {
+            const reader = new FileReader();
+            reader.onload = () => resolve(reader.result);
+            reader.onerror = () => reject(new Error('テキストファイルの読み込みに失敗しました'));
+            reader.readAsText(file, 'UTF-8');
+        });
+    }
+
+    function readExcelFile(file) {
+        return new Promise((resolve, reject) => {
+            const reader = new FileReader();
+            reader.onload = (e) => {
+                try {
+                    const workbook = XLSX.read(e.target.result, { type: 'array' });
+                    let allText = [];
+                    workbook.SheetNames.forEach(sheetName => {
+                        const sheet = workbook.Sheets[sheetName];
+                        const csv = XLSX.utils.sheet_to_csv(sheet, { blankrows: false });
+                        if (csv.trim()) allText.push(csv);
+                    });
+                    resolve(allText.join('\n'));
+                } catch (err) {
+                    reject(new Error('Excelファイルの解析に失敗しました'));
+                }
+            };
+            reader.onerror = () => reject(new Error('Excelファイルの読み込みに失敗しました'));
+            reader.readAsArrayBuffer(file);
+        });
+    }
+
+    function readWordFile(file) {
+        return new Promise((resolve, reject) => {
+            const reader = new FileReader();
+            reader.onload = (e) => {
+                mammoth.extractRawText({ arrayBuffer: e.target.result })
+                    .then(result => resolve(result.value))
+                    .catch(() => reject(new Error('Wordファイルの解析に失敗しました')));
+            };
+            reader.onerror = () => reject(new Error('Wordファイルの読み込みに失敗しました'));
+            reader.readAsArrayBuffer(file);
+        });
+    }
+
+    // ===== AI解析 API呼び出し =====
+    async function analyzeWithAI(scriptText) {
+        const response = await fetch(API_ENDPOINT, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ text: scriptText }),
+        });
+
+        if (!response.ok) {
+            const errorData = await response.json().catch(() => ({}));
+            throw new Error(errorData.error || `サーバーエラー (${response.status})`);
+        }
+
+        const data = await response.json();
+
+        if (!data.success || !Array.isArray(data.data)) {
+            throw new Error('AIからの応答形式が不正です');
+        }
+
+        return data.data;
+    }
+
+    // ===== インタースティシャル広告 =====
+    const INTERSTITIAL_WAIT_SEC = 3; // 広告表示秒数（AdSense承認後は5秒に変更推奨）
+    let pendingResultCallback = null;
+
+    function showInterstitial() {
+        return new Promise((resolve) => {
+            const overlay = document.getElementById('interstitialOverlay');
+            const closeBtn = document.getElementById('interstitialCloseBtn');
+            const countdown = document.getElementById('interstitialCountdown');
+
+            overlay.classList.add('show');
+            closeBtn.disabled = true;
+
+            let remaining = INTERSTITIAL_WAIT_SEC;
+            countdown.textContent = `${remaining}秒後に結果を表示できます`;
+
+            const timer = setInterval(() => {
+                remaining--;
+                if (remaining > 0) {
+                    countdown.textContent = `${remaining}秒後に結果を表示できます`;
+                } else {
+                    clearInterval(timer);
+                    countdown.textContent = '';
+                    closeBtn.disabled = false;
+                }
+            }, 1000);
+
+            closeBtn.onclick = () => {
+                overlay.classList.remove('show');
+                resolve();
+            };
+        });
+    }
+
+    // ===== カウント処理 =====
+    document.getElementById('countBtn').addEventListener('click', doCount);
+
+    async function doCount() {
+        const rawText = scriptInput.value;
+        if (!rawText.trim()) {
+            alert('台本テキストを入力してください。');
+            return;
+        }
+
+        // UIの状態管理
+        const countBtn = document.getElementById('countBtn');
+        const loadingOverlay = document.getElementById('loadingOverlay');
+        const errorMessage = document.getElementById('errorMessage');
+
+        countBtn.disabled = true;
+        loadingOverlay.classList.add('show');
+        errorMessage.classList.remove('show');
+        document.getElementById('results').classList.remove('show');
+
+        try {
+            // AIで台本を解析
+            const parsed = await analyzeWithAI(rawText);
+
+            // ローディングを消してインタースティシャル広告を表示
+            loadingOverlay.classList.remove('show');
+            await showInterstitial();
+
+            // オプションの取得
+            const includeTogaki = document.getElementById('optTogaki').checked;
+            const includeRoleName = document.getElementById('optRoleName').checked;
+            const includePunctuation = document.getElementById('optPunctuation').checked;
+
+            // 文字数計算用のフィルタ関数
+            function countChars(text) {
+                let t = text;
+                if (!includePunctuation) {
+                    t = t.replace(/[、。，．,.!！?？…―ー～〜・「」『』（）()【】[\]｛｝{}]/g, '');
+                }
+                return t.length;
+            }
+
+            // セリフとト書きを集計
+            let serifuTotal = 0;
+            let togakiTotal = 0;
+            let roleNameTotal = 0;
+            const roleMap = {};
+
+            for (const item of parsed) {
+                if (item.type === 'serifu') {
+                    const chars = countChars(item.text || '');
+                    serifuTotal += chars;
+
+                    const role = item.role || '（役名なし）';
+                    if (!roleMap[role]) roleMap[role] = 0;
+                    roleMap[role] += chars;
+
+                    if (includeRoleName && item.role) {
+                        roleNameTotal += countChars(item.role);
+                    }
+                } else if (item.type === 'togaki') {
+                    if (includeTogaki) {
+                        togakiTotal += countChars(item.text || '');
+                    }
+                }
+            }
+
+            const grandTotal = serifuTotal + togakiTotal + roleNameTotal;
+
+            // 表示更新
+            document.getElementById('serifuCount').textContent = serifuTotal.toLocaleString();
+            document.getElementById('togakiCount').textContent = togakiTotal.toLocaleString();
+            document.getElementById('totalCount').textContent = grandTotal.toLocaleString();
+
+            // 推定時間（セリフのみ）
+            document.getElementById('timeSlow').textContent = formatTime(serifuTotal / SPEED_SLOW);
+            document.getElementById('timeNormal').textContent = formatTime(serifuTotal / SPEED_NORMAL);
+            document.getElementById('timeFast').textContent = formatTime(serifuTotal / SPEED_FAST);
+
+            // 役名別テーブル
+            renderRoleTable(roleMap);
+
+            // 結果表示
+            document.getElementById('results').classList.add('show');
+            document.getElementById('results').scrollIntoView({ behavior: 'smooth', block: 'start' });
+
+        } catch (error) {
+            errorMessage.textContent = '⚠️ エラー: ' + error.message;
+            errorMessage.classList.add('show');
+            loadingOverlay.classList.remove('show');
+        } finally {
+            countBtn.disabled = false;
+        }
+    }
+
+    function formatTime(minutes) {
+        if (minutes < 1) {
+            return Math.round(minutes * 60) + '秒';
+        }
+        const m = Math.floor(minutes);
+        const s = Math.round((minutes - m) * 60);
+        if (m === 0) return s + '秒';
+        if (s === 0) return m + '分';
+        return m + '分' + s + '秒';
+    }
+
+    function renderRoleTable(roleMap) {
+        const wrapper = document.getElementById('roleTableWrapper');
+        const roles = Object.entries(roleMap).sort((a, b) => b[1] - a[1]);
+
+        if (roles.length === 0) {
+            wrapper.innerHTML = '<div class="no-roles">役名が検出されませんでした。</div>';
+            return;
+        }
+
+        const total = roles.reduce((sum, [_, count]) => sum + count, 0);
+
+        let html = '<table class="role-table">';
+        html += '<thead><tr><th>役名</th><th style="text-align:right">文字数</th><th style="text-align:right">割合</th></tr></thead>';
+        html += '<tbody>';
+
+        for (const [role, count] of roles) {
+            const percent = total > 0 ? ((count / total) * 100).toFixed(1) : '0.0';
+            html += `<tr>
+                <td class="role-name-cell">${escapeHtml(role)}</td>
+                <td class="role-count-cell">${count.toLocaleString()} 文字</td>
+                <td class="role-count-cell">${percent}%</td>
+            </tr>`;
+        }
+
+        html += '</tbody></table>';
+        wrapper.innerHTML = html;
+    }
+
+    function escapeHtml(str) {
+        const div = document.createElement('div');
+        div.textContent = str;
+        return div.innerHTML;
+    }
+    </script>
+</body>
+</html>
