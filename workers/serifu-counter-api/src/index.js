@@ -77,7 +77,7 @@ async function analyzeScript(scriptText, apiKey) {
     generationConfig: {
       temperature: 0.1,
       topP: 0.8,
-      maxOutputTokens: 8192,
+      maxOutputTokens: 65536,
       responseMimeType: 'application/json',
     }
   };
