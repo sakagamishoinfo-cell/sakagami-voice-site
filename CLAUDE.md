@@ -83,7 +83,49 @@
 - **Git ユーザー名**: ssakagami-commits
 - **Git メール**: sakagamisho.info@gmail.com
 - コミットメッセージは日本語で記載
-- 変更後は `git add` → `git commit` → `git push origin main` で反映
+- 変更後は `git add` → `git commit` → `git push origin main`
+- **注意**: `git push` だけでは本番に反映されない。別途 `wrangler deploy` が必要（下記「ホスティング」参照）
+
+## ホスティング（本番デプロイ）
+- **ホスティング**: Cloudflare Pages
+- **Cloudflareアカウント**: Sakagamisho.info@gmail.com
+- **Account ID**: `dddb6ca62946e48960f80d0cfbe64ade`
+- **ドメイン**: sakagami-voice.com（Active / Free プラン）
+- **DNS**: ネームサーバーは `may.ns.cloudflare.com` / `nero.ns.cloudflare.com`
+- **注意**: Worker用アカウント（Hataraba_xai@office-b.com）とは別アカウント
+- **Pagesプロジェクト名**: `shrill-sunset-90f6`（Workers with Assets 形式）
+- **Cloudflare APIトークン**: `CBrO6VxaeEa51je4T4PfDQxYh982HEeeVAYnmSdy`
+- **デプロイ方法**: Direct Upload（Git連携なし）
+- **デプロイ手順**:
+  1. デプロイ用ディレクトリを作成（公開ファイルのみコピー、CLAUDE.md/workers/等は除外）
+  2. `wrangler.toml` を作成:
+     ```toml
+     name = "shrill-sunset-90f6"
+     compatibility_date = "2026-02-16"
+     [assets]
+     directory = "<デプロイ用ディレクトリのパス>"
+     ```
+  3. 実行:
+     ```bash
+     CLOUDFLARE_API_TOKEN=CBrO6VxaeEa51je4T4PfDQxYh982HEeeVAYnmSdy \
+     CLOUDFLARE_ACCOUNT_ID=dddb6ca62946e48960f80d0cfbe64ade \
+     npx wrangler deploy
+     ```
+- **公開ファイル一覧**（デプロイ対象）:
+  - index.html, privacy.html, favicon.svg
+  - images/profile.jpg
+  - tools/serifu-counter/index.html
+- **除外ファイル**: CLAUDE.md, .git/, .gitignore, workers/
+
+## Google AdSense
+- **Publisher ID**: `ca-pub-1795325754113531`
+- **登録サイト**: sakagami-voice.com
+- **状態**: 要審査（サイト確認未完了 — 本番デプロイ待ち）
+- **AdSenseスクリプト設置済みファイル**: index.html, privacy.html, tools/serifu-counter/index.html
+- **広告ユニット**（セリフカウンター内）:
+  - ヘッダー広告スペース
+  - 結果エリア下部の広告スペース
+  - インタースティシャル広告（結果表示前、3秒カウントダウン）
 
 ## セリフカウンター（/tools/serifu-counter/）
 声優・ナレーター向けの台本文字数カウントツール。
