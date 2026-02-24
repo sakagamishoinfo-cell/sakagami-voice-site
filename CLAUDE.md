@@ -84,7 +84,7 @@
 - **Git メール**: sakagamisho.info@gmail.com
 - コミットメッセージは日本語で記載
 - 変更後は `git add` → `git commit` → `git push origin main`
-- **注意**: `git push` だけでは本番に反映されない。別途 `wrangler deploy` が必要（下記「ホスティング」参照）
+- `git push origin main` で GitHub Actions が自動デプロイを実行（下記「ホスティング」参照）
 
 ## ホスティング（本番デプロイ）
 - **ホスティング**: Cloudflare Pages
@@ -95,22 +95,11 @@
 - **注意**: Worker用アカウント（Hataraba_xai@office-b.com）とは別アカウント
 - **Pagesプロジェクト名**: `shrill-sunset-90f6`（Workers with Assets 形式）
 - **Cloudflare APIトークン**: `CBrO6VxaeEa51je4T4PfDQxYh982HEeeVAYnmSdy`
-- **デプロイ方法**: Direct Upload（Git連携なし）
-- **デプロイ手順**:
-  1. デプロイ用ディレクトリを作成（公開ファイルのみコピー、CLAUDE.md/workers/等は除外）
-  2. `wrangler.toml` を作成:
-     ```toml
-     name = "shrill-sunset-90f6"
-     compatibility_date = "2026-02-16"
-     [assets]
-     directory = "<デプロイ用ディレクトリのパス>"
-     ```
-  3. 実行:
-     ```bash
-     CLOUDFLARE_API_TOKEN=CBrO6VxaeEa51je4T4PfDQxYh982HEeeVAYnmSdy \
-     CLOUDFLARE_ACCOUNT_ID=dddb6ca62946e48960f80d0cfbe64ade \
-     npx wrangler deploy
-     ```
+- **Cloudflare APIトークン**: `CBrO6VxaeEa51je4T4PfDQxYh982HEeeVAYnmSdy`
+- **デプロイ方法**: GitHub Actions 自動デプロイ（`.github/workflows/deploy.yml`）
+  - `git push origin main` → 自動で Cloudflare Pages にデプロイ
+  - GitHub Secrets: `CLOUDFLARE_API_TOKEN`, `CLOUDFLARE_ACCOUNT_ID` 設定済み
+  - 手動デプロイも可能（wrangler deploy）
 - **公開ファイル一覧**（デプロイ対象）:
   - index.html, privacy.html, favicon.svg
   - images/profile.jpg
