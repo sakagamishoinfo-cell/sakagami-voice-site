@@ -86,6 +86,16 @@
 - 変更後は `git add` → `git commit` → `git push origin main`
 - `git push origin main` で GitHub Actions が自動デプロイを実行（下記「ホスティング」参照）
 
+## アカウント一覧（このサイトで使用しているサービス）
+| サービス | アカウント | 用途 |
+|---|---|---|
+| **GitHub** | ssakagami-commits | ソースコード管理・CI/CD |
+| **Cloudflare（ホスティング）** | Sakagamisho.info@gmail.com | sakagami-voice.com のホスティング・DNS |
+| **Cloudflare（Worker）** | Hataraba_xai@office-b.com | セリフカウンターAPI（Gemini プロキシ） |
+| **Google AdSense** | s_sakagami@office-b.com | 広告収益化 |
+| **Google Search Console** | （AdSenseと同じ s_sakagami@office-b.com 推奨） | SEO・検索パフォーマンス |
+| **Formspree** | sakagamisho.info@gmail.com | お問い合わせフォーム |
+
 ## ホスティング（本番デプロイ）
 - **ホスティング**: Cloudflare Pages
 - **Cloudflareアカウント**: Sakagamisho.info@gmail.com
@@ -94,7 +104,6 @@
 - **DNS**: ネームサーバーは `may.ns.cloudflare.com` / `nero.ns.cloudflare.com`
 - **注意**: Worker用アカウント（Hataraba_xai@office-b.com）とは別アカウント
 - **Pagesプロジェクト名**: `shrill-sunset-90f6`（Workers with Assets 形式）
-- **Cloudflare APIトークン**: `CBrO6VxaeEa51je4T4PfDQxYh982HEeeVAYnmSdy`
 - **Cloudflare APIトークン**: `CBrO6VxaeEa51je4T4PfDQxYh982HEeeVAYnmSdy`
 - **デプロイ方法**: GitHub Actions 自動デプロイ（`.github/workflows/deploy.yml`）
   - `git push origin main` → 自動で Cloudflare Pages にデプロイ
@@ -107,9 +116,10 @@
 - **除外ファイル**: CLAUDE.md, .git/, .gitignore, workers/
 
 ## Google AdSense
+- **Googleアカウント**: s_sakagami@office-b.com
 - **Publisher ID**: `ca-pub-1795325754113531`
 - **登録サイト**: sakagami-voice.com
-- **状態**: 要審査（サイト確認未完了 — 本番デプロイ待ち）
+- **状態**: サイト所有権確認OK（2026-02-24）→ 審査リクエスト待ち
 - **AdSenseスクリプト設置済みファイル**: index.html, privacy.html, tools/serifu-counter/index.html
 - **広告ユニット**（セリフカウンター内）:
   - ヘッダー広告スペース
