@@ -317,6 +317,16 @@
         }
         .file-name.show { display: inline-block; }
 
+        .privacy-note {
+            margin-top: 16px;
+            padding: 10px 14px;
+            background: rgba(107, 158, 122, 0.05);
+            border-radius: 8px;
+            font-size: 0.78rem;
+            color: var(--text-dim);
+            line-height: 1.6;
+        }
+
         /* ===== Options ===== */
         .options-grid {
             display: grid;
@@ -769,6 +779,7 @@
                 <li>AIが台本の形式を自動判別し、<strong>セリフ</strong>と<strong>ト書き</strong>を正確に分類します</li>
                 <li>さまざまな台本形式に対応（区切り文字型、カッコ型、インデント型など）</li>
                 <li>役名も自動抽出し、役名別の文字数内訳を表示します</li>
+                <li>🔒 <strong>入力された台本データがAI学習に使用されることはありません</strong>。解析後すぐに破棄されます</li>
             </ul>
         </div>
 
@@ -806,6 +817,8 @@
                 </div>
                 <div class="file-name" id="fileName"></div>
             </div>
+
+            <div class="privacy-note">🔒 入力データはカウント処理のみに使用され、<strong>AI学習には一切利用されません</strong>。解析完了後、データはサーバーに保存されずすぐに破棄されます。</div>
         </div>
 
         <!-- Options Section -->
