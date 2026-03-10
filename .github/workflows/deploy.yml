@@ -14,7 +14,7 @@ jobs:
       - name: Prepare deploy directory
         run: |
           mkdir -p deploy/images deploy/tools/serifu-counter
-          cp index.html privacy.html favicon.svg sitemap.xml robots.txt deploy/
+          cp index.html privacy.html faq.html guide.html training.html glossary.html favicon.svg sitemap.xml robots.txt deploy/
           cp images/profile.jpg deploy/images/
           cp tools/serifu-counter/index.html deploy/tools/serifu-counter/
 
