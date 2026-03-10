@@ -91,9 +91,9 @@
 |---|---|---|
 | **GitHub** | ssakagami-commits | ソースコード管理・CI/CD |
 | **Cloudflare（ホスティング）** | Sakagamisho.info@gmail.com | sakagami-voice.com のホスティング・DNS |
-| **Cloudflare（Worker）** | Hataraba_xai@office-b.com | セリフカウンターAPI（Gemini プロキシ） |
-| **Google AdSense** | s_sakagami@office-b.com | 広告収益化 |
-| **Google Search Console** | （AdSenseと同じ s_sakagami@office-b.com 推奨） | SEO・検索パフォーマンス |
+| **Cloudflare（Worker）** | Sakagamisho.info@gmail.com ✅ 移行済み | セリフカウンターAPI（Gemini プロキシ） |
+| **Google AdSense** | sakagamisho.info@gmail.com に移行予定（旧: s_sakagami@office-b.com を閉鎖中） | 広告収益化 |
+| **Google Search Console** | sakagamisho.info@gmail.com ✅ 移行済み | SEO・検索パフォーマンス |
 | **Formspree** | sakagamisho.info@gmail.com | お問い合わせフォーム |
 
 ## ホスティング（本番デプロイ）
@@ -102,7 +102,7 @@
 - **Account ID**: `dddb6ca62946e48960f80d0cfbe64ade`
 - **ドメイン**: sakagami-voice.com（Active / Free プラン）
 - **DNS**: ネームサーバーは `may.ns.cloudflare.com` / `nero.ns.cloudflare.com`
-- **注意**: Worker用アカウント（Hataraba_xai@office-b.com）とは別アカウント
+- **注意**: Worker・Pages両方とも同一アカウント（Sakagamisho.info@gmail.com）
 - **Pagesプロジェクト名**: `shrill-sunset-90f6`（Workers with Assets 形式）
 - **Cloudflare APIトークン**: `CBrO6VxaeEa51je4T4PfDQxYh982HEeeVAYnmSdy`
 - **デプロイ方法**: GitHub Actions 自動デプロイ（`.github/workflows/deploy.yml`）
@@ -138,9 +138,9 @@
 
 ## Cloudflare Worker（serifu-counter-api）
 Gemini APIキーを隠すためのサーバーレスプロキシ。
-- **Worker URL**: https://serifu-counter-api.hataraba-xai.workers.dev
-- **Cloudflareアカウント**: Hataraba_xai@office-b.com
-- **Account ID**: ec6340aad9db27a431496f9464de251a
+- **Worker URL**: https://serifu-counter-api.sakagamisho-info.workers.dev
+- **Cloudflareアカウント**: Sakagamisho.info@gmail.com ✅ 移行済み
+- **Account ID**: dddb6ca62946e48960f80d0cfbe64ade
 - **モデル**: gemini-2.5-flash（responseMimeType: application/json）
 - **Secret**: `GEMINI_API_KEY`（wrangler secret putで設定済み）
 - **CORS許可オリジン**: sakagami-voice.com, localhost:8080, 127.0.0.1:8080

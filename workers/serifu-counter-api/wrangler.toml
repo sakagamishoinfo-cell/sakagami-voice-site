@@ -1,6 +1,7 @@
 name = "serifu-counter-api"
 main = "src/index.js"
 compatibility_date = "2024-12-01"
+account_id = "dddb6ca62946e48960f80d0cfbe64ade"
 
 # Gemini APIキーは `wrangler secret put GEMINI_API_KEY` で設定する
 # コードやこのファイルには直接書かない
