@@ -57,18 +57,18 @@
 
     <style>
         :root {
-            --accent: #6b9e7a;
-            --accent-light: #4e8a60;
-            --accent-hover: #5a8e69;
-            --bg-primary: #f9f8f5;
-            --bg-secondary: #f1efe9;
-            --bg-card: #fdfcfa;
-            --text-primary: #1a1a1a;
-            --text-secondary: #3a3a3a;
-            --text-dim: #5a5a5a;
-            --gold: #b89856;
-            --border: rgba(0,0,0,0.08);
-            --shadow: 0 2px 12px rgba(0,0,0,0.06);
+            --accent: #6fbf8a;
+            --accent-light: #8dd4a4;
+            --accent-hover: #5aad75;
+            --bg-primary: #1e2a1f;
+            --bg-secondary: #253128;
+            --bg-card: #2a3a2d;
+            --text-primary: #e8e3d9;
+            --text-secondary: #c4bfb3;
+            --text-dim: #8a8578;
+            --gold: #d4ad6a;
+            --border: rgba(255,255,255,0.08);
+            --shadow: 0 2px 12px rgba(0,0,0,0.2);
             --radius: 12px;
         }
 
@@ -84,7 +84,7 @@
 
         /* ===== Header ===== */
         .header {
-            background: var(--bg-card);
+            background: #162018;
             border-bottom: 1px solid var(--border);
             padding: 16px 0;
         }
@@ -141,8 +141,8 @@
 
         /* ===== Rule Box ===== */
         .rule-box {
-            background: rgba(107, 158, 122, 0.06);
-            border: 1px solid rgba(107, 158, 122, 0.2);
+            background: rgba(111, 191, 138, 0.08);
+            border: 1px solid rgba(111, 191, 138, 0.15);
             border-radius: var(--radius);
             padding: 20px 24px;
             margin-bottom: 32px;
@@ -246,7 +246,7 @@
             outline: none;
             border-color: var(--accent);
         }
-        .script-textarea::placeholder { color: #aaa; }
+        .script-textarea::placeholder { color: #6a6560; }
         .script-textarea.vertical {
             writing-mode: vertical-rl;
             min-height: 400px;
@@ -394,7 +394,7 @@
             display: flex;
         }
         .loading-box {
-            background: white;
+            background: var(--bg-card);
             border-radius: var(--radius);
             padding: 40px 50px;
             text-align: center;
@@ -592,7 +592,7 @@
             justify-content: center;
         }
         .ad-space .ad-placeholder {
-            color: #ccc;
+            color: var(--text-dim);
             font-size: 0.8rem;
             border: 1px dashed var(--border);
             border-radius: 8px;
@@ -605,7 +605,7 @@
             display: none;
             position: fixed;
             top: 0; left: 0; right: 0; bottom: 0;
-            background: rgba(0,0,0,0.7);
+            background: rgba(0,0,0,0.8);
             z-index: 2000;
             justify-content: center;
             align-items: center;
@@ -615,7 +615,7 @@
             display: flex;
         }
         .interstitial-box {
-            background: white;
+            background: var(--bg-card);
             border-radius: 16px;
             max-width: 500px;
             width: 100%;
@@ -645,7 +645,7 @@
             background: var(--bg-primary);
         }
         .interstitial-ad-area .ad-placeholder {
-            color: #bbb;
+            color: var(--text-dim);
             font-size: 0.8rem;
             border: 1px dashed var(--border);
             border-radius: 8px;
@@ -699,7 +699,7 @@
             border-top: 1px solid var(--border);
             padding: 32px 20px;
             text-align: center;
-            background: var(--bg-card);
+            background: #162018;
         }
         .footer-credit {
             font-size: 0.85rem;
@@ -799,7 +799,7 @@
         .guide-content .note-box {
             border-left: 3px solid var(--accent);
             padding: 0.8rem 1.2rem;
-            background: rgba(107, 158, 122, 0.05);
+            background: rgba(111, 191, 138, 0.08);
             margin: 1rem 0;
             font-size: 0.85rem;
             color: var(--text-secondary);
