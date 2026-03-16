@@ -716,6 +716,129 @@
             color: #aaa;
         }
 
+        /* ===== Guide Section ===== */
+        .guide-section {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 0 20px 60px;
+        }
+        .guide-toggle {
+            width: 100%;
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            padding: 20px 24px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            font-family: inherit;
+            font-size: 1.05rem;
+            font-weight: 700;
+            color: var(--text-primary);
+            transition: background 0.2s;
+        }
+        .guide-toggle:hover { background: var(--bg-secondary); }
+        .guide-toggle-arrow {
+            font-size: 0.8rem;
+            color: var(--text-dim);
+            transition: transform 0.3s;
+        }
+        .guide-toggle.open .guide-toggle-arrow { transform: rotate(180deg); }
+        .guide-content {
+            display: none;
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-top: none;
+            border-radius: 0 0 var(--radius) var(--radius);
+            padding: 28px;
+        }
+        .guide-content.open { display: block; }
+        .guide-toggle.open { border-radius: var(--radius) var(--radius) 0 0; }
+        .guide-content h2 {
+            font-size: 1rem;
+            font-weight: 700;
+            margin-top: 2rem;
+            margin-bottom: 0.6rem;
+            color: var(--text-primary);
+        }
+        .guide-content h2:first-child { margin-top: 0; }
+        .guide-content h3 {
+            font-size: 0.95rem;
+            font-weight: 500;
+            margin-top: 1.2rem;
+            margin-bottom: 0.4rem;
+        }
+        .guide-content p {
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+            margin-bottom: 0.8rem;
+            line-height: 1.9;
+        }
+        .guide-content ul {
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+            margin-bottom: 0.8rem;
+            padding-left: 1.2em;
+            line-height: 1.9;
+        }
+        .guide-content .step-num {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 1.6rem;
+            height: 1.6rem;
+            background: var(--accent);
+            color: #fff;
+            border-radius: 50%;
+            font-size: 0.8rem;
+            font-weight: 500;
+            margin-right: 0.4rem;
+            vertical-align: middle;
+        }
+        .guide-content .note-box {
+            border-left: 3px solid var(--accent);
+            padding: 0.8rem 1.2rem;
+            background: rgba(107, 158, 122, 0.05);
+            margin: 1rem 0;
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+            line-height: 1.9;
+            border-radius: 0 4px 4px 0;
+        }
+        .guide-content .format-list {
+            list-style: none;
+            padding: 0;
+        }
+        .guide-content .format-list li {
+            padding: 0.6rem 0.8rem;
+            background: var(--bg-primary);
+            border: 1px solid var(--border);
+            margin-bottom: 0.4rem;
+            border-radius: 4px;
+            font-size: 0.9rem;
+        }
+        .guide-content .format-name {
+            font-weight: 500;
+            color: var(--text-primary);
+        }
+        .guide-content .speed-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 0.8rem 0;
+            font-size: 0.9rem;
+        }
+        .guide-content .speed-table th,
+        .guide-content .speed-table td {
+            padding: 0.5rem 0.8rem;
+            text-align: left;
+            border-bottom: 1px solid var(--border);
+        }
+        .guide-content .speed-table th {
+            font-weight: 500;
+            font-size: 0.85rem;
+        }
+
         /* ===== Responsive ===== */
         @media (max-width: 600px) {
             .title-section h1 { font-size: 1.5rem; }
@@ -937,6 +1060,67 @@
 
     </main>
 
+    <!-- Guide Section -->
+    <div class="guide-section">
+        <button class="guide-toggle" id="guideToggle" onclick="toggleGuide()">
+            <span>使い方ガイド</span>
+            <span class="guide-toggle-arrow">▾</span>
+        </button>
+        <div class="guide-content" id="guideContent">
+            <h2><span class="step-num">1</span> 台本を入力する</h2>
+
+            <h3>テキストを直接貼り付ける</h3>
+            <p>「テキスト貼り付け」タブを選んで、テキストエリアに台本の内容をそのまま貼り付けてください。区切り文字型（「太郎：おはよう」）、カッコ型（太郎「おはよう」）、インデント型など、さまざまな台本形式に対応しています。</p>
+
+            <h3>ファイルをアップロードする</h3>
+            <p>「ファイルアップロード」タブを選んで、台本ファイルをドラッグ&amp;ドロップまたはクリックで選択してください。</p>
+            <ul class="format-list">
+                <li><span class="format-name">Excel（.xlsx / .xls）</span> — セル内のテキストを結合して解析</li>
+                <li><span class="format-name">Word（.docx）</span> — 文書内のテキストを抽出して解析</li>
+                <li><span class="format-name">テキスト（.txt）</span> — ファイルの内容をそのまま解析</li>
+            </ul>
+            <div class="note-box">入力できるテキストの上限は10万文字です。長編台本の場合は、章やシーンごとに分割して解析することをおすすめします。</div>
+
+            <h2><span class="step-num">2</span> カウントオプションを選ぶ</h2>
+            <p>解析前に、以下のオプションで文字数のカウント方法を調整できます。</p>
+            <ul>
+                <li><strong>ト書きも文字数に含める</strong> — ト書き（舞台指示・動作指示）の文字数も合計に加えます</li>
+                <li><strong>役名を文字数に含める</strong> — 「太郎：」などの役名部分も文字数としてカウントします</li>
+                <li><strong>句読点を文字数に含める</strong> — 句点（。）や読点（、）も1文字としてカウントします</li>
+            </ul>
+            <p>オプションを選んだら「AIでカウントする」ボタンをクリックしてください。AIが台本を解析し、数秒で結果が表示されます。</p>
+
+            <h2><span class="step-num">3</span> 結果を確認する</h2>
+
+            <h3>文字数サマリー</h3>
+            <p>解析結果の上部に、セリフ文字数・ト書き文字数・総文字数が表示されます。お見積もりの算出にそのままご利用いただけます。</p>
+
+            <h3>推定読み上げ時間</h3>
+            <p>セリフの文字数をもとに、3段階の速度で推定読み上げ時間を算出します。</p>
+            <table class="speed-table">
+                <thead><tr><th>速度</th><th>1分あたり</th><th>想定シーン</th></tr></thead>
+                <tbody>
+                    <tr><td>ゆったり</td><td>280文字/分</td><td>ナレーション、朗読</td></tr>
+                    <tr><td>普通</td><td>380文字/分</td><td>一般的な会話シーン</td></tr>
+                    <tr><td>スピーディー</td><td>480文字/分</td><td>テンポの速い掛け合い</td></tr>
+                </tbody>
+            </table>
+
+            <h3>役名別内訳</h3>
+            <p>AIが自動で役名を検出し、キャラクターごとのセリフ文字数と割合を一覧で表示します。出演量のバランス確認や、キャスト別のギャランティ計算などにご活用いただけます。</p>
+
+            <h3>台本プレビュー（色分け）</h3>
+            <p>台本の内容が、役名ごとに色分けされたプレビューとして表示されます。セリフとト書きが視覚的に区別されるため、台本の構成を一目で確認できます。</p>
+
+            <div class="note-box">入力された台本データがAI学習に使用されることはありません。解析完了後、データはサーバーに保存されず速やかに破棄されます。安心してご利用ください。</div>
+
+            <h2>よくある質問</h2>
+            <p><strong>解析結果は正確ですか？</strong><br>AIによる自動判別のため、特殊な台本形式では誤分類が起きる場合があります。結果はあくまで参考値としてご利用ください。</p>
+            <p><strong>対応していない形式はありますか？</strong><br>PDF形式には現在対応していません。PDFの台本は、テキストをコピーして貼り付けるか、Word形式に変換してからご利用ください。</p>
+            <p><strong>スマートフォンでも使えますか？</strong><br>はい、スマートフォンやタブレットからもご利用いただけます。テキスト貼り付けでの入力がおすすめです。</p>
+        </div>
+    </div>
+
     <!-- Footer -->
     <footer class="footer">
         <div class="footer-credit">
@@ -946,6 +1130,12 @@
     </footer>
 
     <script>
+    // ===== ガイド折りたたみ =====
+    function toggleGuide() {
+        document.getElementById('guideToggle').classList.toggle('open');
+        document.getElementById('guideContent').classList.toggle('open');
+    }
+
     // ===== 設定 =====
     // Cloudflare Worker のエンドポイント（デプロイ後に設定する）
     const API_ENDPOINT = 'https://serifu-counter-api.sakagamisho-info.workers.dev';

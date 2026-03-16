@@ -13,6 +13,10 @@
 ホームページ/
 ├── index.html          # メインページ（HTML/CSS/JS一体型）
 ├── privacy.html        # プライバシーポリシーページ
+├── faq.html            # よくある質問（Q&A形式）
+├── guide.html          # セリフカウンター使い方ガイド
+├── training.html       # 声優を目指す方へ（発声・滑舌トレーニング）
+├── glossary.html       # 声優・ナレーション用語集（JS検索フィルタ付き）
 ├── favicon.svg         # ファビコン（SVG、黒背景に白"S"）
 ├── favicon.png         # ファビコン（PNG）※未作成
 ├── apple-touch-icon.png # Apple用アイコン ※未作成
@@ -110,7 +114,8 @@
   - GitHub Secrets: `CLOUDFLARE_API_TOKEN`, `CLOUDFLARE_ACCOUNT_ID` 設定済み
   - 手動デプロイも可能（wrangler deploy）
 - **公開ファイル一覧**（デプロイ対象）:
-  - index.html, privacy.html, favicon.svg
+  - index.html, privacy.html, faq.html, guide.html, training.html, glossary.html, favicon.svg
+  - sitemap.xml, robots.txt
   - images/profile.jpg
   - tools/serifu-counter/index.html
 - **除外ファイル**: CLAUDE.md, .git/, .gitignore, workers/

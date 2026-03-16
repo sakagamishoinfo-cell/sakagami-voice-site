@@ -127,7 +127,7 @@
         .nav-dropdown-menu {
             display: none;
             position: absolute;
-            top: calc(100% + 0.5rem);
+            top: 100%;
             right: 0;
             background: rgba(249,248,245,0.97);
             backdrop-filter: blur(20px);
@@ -135,6 +135,7 @@
             border: 1px solid var(--border);
             border-radius: 8px;
             padding: 0.5rem 0;
+            padding-top: 1rem;
             min-width: 200px;
             box-shadow: 0 4px 20px rgba(0,0,0,0.08);
             list-style: none;
@@ -984,11 +985,10 @@
         <li><a href="#works">Works</a></li>
         <li><a href="#pricing">料金</a></li>
         <li><a href="#contact">Contact</a></li>
+        <li><a href="/tools/serifu-counter/">セリフカウンター</a></li>
         <li class="nav-dropdown">
             <a href="#" class="nav-dropdown-toggle">More <span class="dropdown-arrow">▾</span></a>
             <ul class="nav-dropdown-menu">
-                <li><a href="/tools/serifu-counter/">セリフカウンター</a></li>
-                <li><a href="/guide.html">使い方ガイド</a></li>
                 <li><a href="/faq.html">よくある質問</a></li>
                 <li><a href="/training.html">声優を目指す方へ</a></li>
                 <li><a href="/glossary.html">用語集</a></li>
@@ -1009,7 +1009,6 @@
     <a href="#pricing" onclick="toggleMenu()">料金</a>
     <a href="#contact" onclick="toggleMenu()">Contact</a>
     <a href="/tools/serifu-counter/" onclick="toggleMenu()">セリフカウンター</a>
-    <a href="/guide.html" onclick="toggleMenu()">使い方ガイド</a>
     <a href="/faq.html" onclick="toggleMenu()">よくある質問</a>
     <a href="/training.html" onclick="toggleMenu()">声優を目指す方へ</a>
     <a href="/glossary.html" onclick="toggleMenu()">用語集</a>
