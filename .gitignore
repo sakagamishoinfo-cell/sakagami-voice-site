@@ -10,3 +10,6 @@ desktop.ini
 
 # Cloudflare Workers
 .wrangler/
+
+# Claude Code
+.claude/

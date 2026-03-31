@@ -51,20 +51,22 @@
 7. Contact（お問い合わせフォーム）
 8. Footer
 
-## カラーテーマ（CSS変数）
+## カラーテーマ（CSS変数） — ダークフォレスト
 ```css
 :root {
-    --accent: #6b9e7a;        /* アクセントカラー（緑系） */
-    --accent-light: #4e8a60;
-    --accent-dark: #8dbf9c;
-    --bg-primary: #f9f8f5;    /* 背景（温かみのあるオフホワイト） */
-    --bg-secondary: #f1efe9;
-    --bg-card: #fdfcfa;
-    --text-primary: #1a1a1a;  /* テキスト（はっきりした黒系） */
-    --text-secondary: #3a3a3a;
-    --text-dim: #5a5a5a;
-    --gold: #b89856;
-    --border: rgba(0,0,0,0.06);
+    --accent: #6fbf8a;        /* アクセントカラー（緑系） */
+    --accent-light: #8dd4a4;
+    --accent-dark: #4a9e6a;
+    --bg-primary: #1e2a1f;    /* 背景（深い森の緑） */
+    --bg-secondary: #253128;
+    --bg-card: #2a3a2d;
+    --bg-forest: #162018;
+    --text-primary: #e8e3d9;  /* テキスト（温かみのあるオフホワイト） */
+    --text-secondary: #c4bfb3;
+    --text-dim: #8a8578;
+    --text-on-dark: #e8e3d9;
+    --gold: #d4ad6a;
+    --border: rgba(255,255,255,0.08);
 }
 ```
 
@@ -81,10 +83,10 @@
 - canonical URL: `https://sakagami-voice.com/`
 
 ## Git / バージョン管理
-- **リポジトリ**: https://github.com/ssakagami-commits/sakagami-voice-site (Private)
+- **リポジトリ**: https://github.com/sakagamishoinfo-cell/sakagami-voice-site (Private)
 - **ブランチ**: main
 - **ローカルパス**: `C:\Users\s_sakagami\Desktop\声優・ポートフォリオ関連\ホームページ`
-- **Git ユーザー名**: ssakagami-commits
+- **Git ユーザー名**: sakagamishoinfo-cell
 - **Git メール**: sakagamisho.info@gmail.com
 - コミットメッセージは日本語で記載
 - 変更後は `git add` → `git commit` → `git push origin main`
@@ -93,7 +95,7 @@
 ## アカウント一覧（このサイトで使用しているサービス）
 | サービス | アカウント | 用途 |
 |---|---|---|
-| **GitHub** | ssakagami-commits | ソースコード管理・CI/CD |
+| **GitHub** | sakagamishoinfo-cell | ソースコード管理・CI/CD |
 | **Cloudflare（ホスティング）** | Sakagamisho.info@gmail.com | sakagami-voice.com のホスティング・DNS |
 | **Cloudflare（Worker）** | Sakagamisho.info@gmail.com ✅ 移行済み | セリフカウンターAPI（Gemini プロキシ） |
 | **Google AdSense** | sakagamisho.info@gmail.com に移行予定（旧: s_sakagami@office-b.com を閉鎖中） | 広告収益化 |
