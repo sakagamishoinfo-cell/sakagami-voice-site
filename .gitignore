@@ -13,3 +13,8 @@ desktop.ini
 
 # Claude Code
 .claude/
+
+.dev.vars*
+!.dev.vars.example
+.env*
+!.env.example
