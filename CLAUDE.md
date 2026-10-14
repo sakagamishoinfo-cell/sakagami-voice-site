@@ -83,7 +83,8 @@
 - canonical URL: `https://sakagami-voice.com/`
 
 ## Git / バージョン管理
-- **リポジトリ**: https://github.com/sakagamishoinfo-cell/sakagami-voice-site (Private)
+- **リポジトリ**: https://github.com/sakagamishoinfo-cell/sakagami-voice-site（Private で運用する）
+  - ⚠️ 2026-10-14 時点で Public になっていた（2026-03-18 のアカウント移行で新規作成した際に Public になったとみられる）
 - **ブランチ**: main
 - **ローカルパス**: `C:\Users\s_sakagami\Desktop\声優・ポートフォリオ関連\ホームページ`
 - **Git ユーザー名**: sakagamishoinfo-cell
@@ -91,6 +92,12 @@
 - コミットメッセージは日本語で記載
 - 変更後は `git add` → `git commit` → `git push origin main`
 - `git push origin main` で GitHub Actions が自動デプロイを実行（下記「ホスティング」参照）
+
+## 秘密情報の扱い
+- APIトークン・APIキー・パスワードは、このファイルやコードに書かない
+  - Cloudflare APIトークン → GitHub Secrets
+  - Gemini APIキー → `wrangler secret put`
+- 2026-02-24〜2026-10-14 の間、Cloudflare APIトークンがこのファイルに書かれていた。ファイルからは消したが git の履歴には残っているので、Cloudflare 側でトークンを作り直す（Roll）こと
 
 ## アカウント一覧（このサイトで使用しているサービス）
 | サービス | アカウント | 用途 |
@@ -110,11 +117,13 @@
 - **DNS**: ネームサーバーは `may.ns.cloudflare.com` / `nero.ns.cloudflare.com`
 - **注意**: Worker・Pages両方とも同一アカウント（Sakagamisho.info@gmail.com）
 - **Pagesプロジェクト名**: `shrill-sunset-90f6`（Workers with Assets 形式）
-- **Cloudflare APIトークン**: `CBrO6VxaeEa51je4T4PfDQxYh982HEeeVAYnmSdy`
+- **Cloudflare APIトークン**: GitHub Secrets（`CLOUDFLARE_API_TOKEN`）に保存。値はこのファイルに書かない（下記「秘密情報の扱い」参照）
 - **デプロイ方法**: GitHub Actions 自動デプロイ（`.github/workflows/deploy.yml`）
   - `git push origin main` → 自動で Cloudflare Pages にデプロイ
-  - GitHub Secrets: `CLOUDFLARE_API_TOKEN`, `CLOUDFLARE_ACCOUNT_ID` 設定済み
+  - GitHub Secrets: `CLOUDFLARE_API_TOKEN`, `CLOUDFLARE_ACCOUNT_ID`
   - 手動デプロイも可能（wrangler deploy）
+  - ⚠️ 2026-03 の GitHub アカウント移行後、新リポジトリでの Actions デプロイは3回とも失敗している（新リポジトリに Secrets が未設定の可能性）
+  - ⚠️ 2026-03-31 に Cloudflare 側の Git 連携（Workers Builds）が接続され、自動設定 PR #1 が未マージで残っている。PR #1 は `assets.directory` が `"."`（リポジトリ全体）なので、そのままマージすると CLAUDE.md や workers/ まで公開される。マージしないこと
 - **公開ファイル一覧**（デプロイ対象）:
   - index.html, privacy.html, faq.html, guide.html, training.html, glossary.html, favicon.svg
   - sitemap.xml, robots.txt
