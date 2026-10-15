@@ -1,0 +1,21 @@
+# Cloudflare（wrangler）でサイトに載せるファイルの指定
+#
+# Cloudflare の Git 連携はリポジトリ全体をサイトにアップロードするため、
+# 「いったん全部除外して、公開するものだけ戻す」方式にしている。
+# CLAUDE.md・workers/・.git/ などは、ここに書かなければ公開されない。
+# 新しいページやファイルを公開するときは、下の「!」の行に追加すること
+# （.github/workflows/deploy.yml の cp の行にも同じものを追加する）。
+
+/*
+
+!/index.html
+!/privacy.html
+!/faq.html
+!/guide.html
+!/training.html
+!/glossary.html
+!/favicon.svg
+!/sitemap.xml
+!/robots.txt
+!/images/
+!/tools/

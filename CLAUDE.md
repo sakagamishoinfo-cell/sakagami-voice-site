@@ -22,7 +22,8 @@
 ├── apple-touch-icon.png # Apple用アイコン ※未作成
 ├── images/
 │   └── profile.jpg     # プロフィール写真
-├── CLAUDE.md           # このファイル
+├── CLAUDE.md           # このファイル（非公開）
+├── .assetsignore       # サイトに載せるファイルの指定（ここに書いたものだけ公開）
 ├── tools/
 │   └── serifu-counter/
 │       └── index.html  # セリフカウンター（AI解析版）
@@ -97,7 +98,7 @@
 - APIトークン・APIキー・パスワードは、このファイルやコードに書かない
   - Cloudflare APIトークン → GitHub Secrets
   - Gemini APIキー → `wrangler secret put`
-- 2026-02-24〜2026-10-14 の間、Cloudflare APIトークンがこのファイルに書かれていた。ファイルからは消したが git の履歴には残っているので、Cloudflare 側でトークンを作り直す（Roll）こと
+- 2026-02-24〜2026-10-14 の間、Cloudflare APIトークンがこのファイルに書かれていた（GitHub とサイト上の両方で公開状態だった）。ファイルからは消したが git の履歴には残っているので、Cloudflare 側でトークンを作り直す（Roll）こと
 
 ## アカウント一覧（このサイトで使用しているサービス）
 | サービス | アカウント | 用途 |
@@ -123,13 +124,16 @@
   - GitHub Secrets: `CLOUDFLARE_API_TOKEN`, `CLOUDFLARE_ACCOUNT_ID`
   - 手動デプロイも可能（wrangler deploy）
   - ⚠️ 2026-03 の GitHub アカウント移行後、新リポジトリでの Actions デプロイは3回とも失敗している（新リポジトリに Secrets が未設定の可能性）
-  - ⚠️ 2026-03-31 に Cloudflare 側の Git 連携（Workers Builds）が接続され、自動設定 PR #1 が未マージで残っている。PR #1 は `assets.directory` が `"."`（リポジトリ全体）なので、そのままマージすると CLAUDE.md や workers/ まで公開される。マージしないこと
+  - ⚠️ 2026-03-31 に Cloudflare 側の Git 連携（Workers Builds）が接続された。main に push すると、Actions とは別にこちらでもデプロイされる
+  - ⚠️ Workers Builds はリポジトリ全体（`.git/` を含む）をサイトにアップロードする。2026-10-14 に https://sakagami-voice.com/CLAUDE.md が公開されているのを確認した。`.assetsignore` で公開ファイルを限定して対処
+  - 自動設定 PR #1 は `assets.directory` が `"."`（リポジトリ全体）。マージしないこと
 - **公開ファイル一覧**（デプロイ対象）:
   - index.html, privacy.html, faq.html, guide.html, training.html, glossary.html, favicon.svg
   - sitemap.xml, robots.txt
   - images/profile.jpg
   - tools/serifu-counter/index.html
-- **除外ファイル**: CLAUDE.md, .git/, .gitignore, workers/
+  - 公開ファイルを追加・変更したら、`.assetsignore` の `!` の行と `deploy.yml` の `cp` の行の**両方**を更新する
+- **除外ファイル**: 上の一覧にないものはすべて（CLAUDE.md, .git/, .github/, .gitignore, .assetsignore, workers/ など）
 
 ## Google AdSense
 - **Googleアカウント**: s_sakagami@office-b.com
